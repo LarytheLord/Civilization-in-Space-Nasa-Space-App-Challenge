@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-LunaBot Simulation Launch File
-Launches Gazebo simulation with lunar habitat world and LunaBot robot
+LunaBot Webots Simulation Launch File
+Launches Webots simulation with lunar habitat world and LunaBot robot
 """
 
 import os
@@ -13,12 +13,13 @@ from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitut
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
+from webots_ros2_driver.webots_launcher import WebotsLauncher
+from webots_ros2_driver.webots_controller import WebotsController
 
 def generate_launch_description():
     
     # Package directories
     pkg_lunabot_navigation = FindPackageShare('lunabot_navigation')
-    pkg_gazebo_ros = FindPackageShare('gazebo_ros')
     
     # Launch arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -37,8 +38,8 @@ def generate_launch_description():
     
     declare_world_file_cmd = DeclareLaunchArgument(
         'world_file',
-        default_value=PathJoinSubstitution([pkg_lunabot_navigation, 'worlds', 'lunar_habitat.world']),
-        description='Full path to world file to load'
+        default_value=PathJoinSubstitution([pkg_lunabot_navigation, 'worlds', 'lunar_habitat.wbt']),
+        description='Full path to Webots world file to load'
     )
     
     declare_robot_name_cmd = DeclareLaunchArgument(
@@ -65,11 +66,25 @@ def generate_launch_description():
         description='Initial z position of the robot'
     )
     
-    # Robot description
+    # Webots launcher
+    webots = WebotsLauncher(
+        world=world_file,
+        ros2_supervisor=True
+    )
+    
+    # Robot controller
+    lunabot_controller = WebotsController(
+        robot_name='lunabot',
+        parameters=[
+            {'use_sim_time': use_sim_time},
+        ],
+        respawn=True
+    )
+    
+    # Robot state publisher (for TF tree)
     urdf_file = PathJoinSubstitution([pkg_lunabot_navigation, 'urdf', 'lunabot.urdf.xacro'])
     robot_description = Command(['xacro ', urdf_file])
     
-    # Robot state publisher
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -79,42 +94,6 @@ def generate_launch_description():
             'use_sim_time': use_sim_time,
             'robot_description': robot_description
         }]
-    )
-    
-    # Joint state publisher
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
-    
-    # Gazebo launch
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([pkg_gazebo_ros, 'launch', 'gazebo.launch.py'])
-        ]),
-        launch_arguments={
-            'world': world_file,
-            'verbose': 'true'
-        }.items()
-    )
-    
-    # Spawn robot
-    spawn_robot_node = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
-        name='spawn_lunabot',
-        output='screen',
-        arguments=[
-            '-topic', 'robot_description',
-            '-entity', robot_name,
-            '-x', x_pose,
-            '-y', y_pose, 
-            '-z', z_pose
-        ],
-        parameters=[{'use_sim_time': use_sim_time}]
     )
     
     # RViz2
@@ -140,10 +119,9 @@ def generate_launch_description():
     ld.add_action(declare_z_pose_cmd)
     
     # Add nodes
+    ld.add_action(webots)
+    ld.add_action(lunabot_controller)
     ld.add_action(robot_state_publisher_node)
-    ld.add_action(joint_state_publisher_node)
-    ld.add_action(gazebo_launch)
-    ld.add_action(spawn_robot_node)
     ld.add_action(rviz_node)
     
     return ld

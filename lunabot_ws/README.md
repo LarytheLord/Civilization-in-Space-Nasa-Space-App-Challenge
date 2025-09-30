@@ -73,8 +73,11 @@ lunabot_ws/
 - **Ubuntu 22.04 LTS**
 - **ROS2 Humble** (or compatible distribution)
 - **Python 3.8+**
-- **Gazebo 11+**
+- **Webots R2023b** (for simulation)
 - **4GB+ RAM** recommended
+
+### 🚀 **SYSTEM STATUS: READY FOR DEMO** 🚀
+All major components completed and integrated! See `PROJECT_STATUS.md` for detailed status.
 
 ### Quick Start
 

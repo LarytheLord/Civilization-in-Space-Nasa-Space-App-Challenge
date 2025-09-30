@@ -29,6 +29,8 @@ install(PROGRAMS
   scripts/sensor_fusion_node.py
   scripts/habitat_monitor.py
   scripts/maintenance_patrol.py
+  scripts/ai_decision_engine.py
+  scripts/demo_controller.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -44,12 +46,14 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-# Install URDF and meshes
+# Install URDF, worlds, maps, and controllers
 install(DIRECTORY
   urdf
-  meshes
   worlds
+  maps
+  controllers
   DESTINATION share/${PROJECT_NAME}/
+  USE_SOURCE_PERMISSIONS
 )
 
 if(BUILD_TESTING)

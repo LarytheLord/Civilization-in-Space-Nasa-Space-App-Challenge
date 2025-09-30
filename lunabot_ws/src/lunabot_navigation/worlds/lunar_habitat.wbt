@@ -1,0 +1,676 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidSphere.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidCylinder.proto"
+
+WorldInfo {
+  info [
+    "LunaBot Lunar Habitat Simulation World"
+    "Designed for autonomous navigation and habitat monitoring"
+    "Smart India Hackathon 2025 - Problem Statement ID: 25169"
+  ]
+  title "LunaBot Lunar Habitat"
+  gravity 0 0 -1.62
+  physics "lunar_physics"
+  basicTimeStep 16
+  FPS 60
+  optimalThreadCount 8
+  randomSeed 52
+}
+
+Viewpoint {
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position -1.5 -1.5 15
+  follow "lunabot"
+  followSmoothness 0.01
+}
+
+TexturedBackground {
+  texture "mars"
+  skyColor [
+    0.05 0.05 0.1
+  ]
+  luminosity 0.3
+}
+
+TexturedBackgroundLight {
+  luminosity 0.5
+  castShadows FALSE
+}
+
+# Lunar Surface Arena
+RectangleArena {
+  translation 0 0 0
+  floorSize 50 50
+  floorTileSize 2 2
+  floorAppearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/default/worlds/textures/lunar_surface.jpg"
+      ]
+    }
+    roughness 0.8
+    metalness 0.1
+  }
+  wallHeight 0.1
+  wallAppearance PBRAppearance {
+    baseColor 0.3 0.3 0.3
+    roughness 0.9
+    metalness 0.1
+  }
+}
+
+# Habitat Module 1
+SolidCylinder {
+  translation 5 0 1
+  name "habitat_module_1"
+  height 2
+  radius 3
+  appearance PBRAppearance {
+    baseColor 0.9 0.9 0.9
+    roughness 0.3
+    metalness 0.7
+  }
+  physics Physics {
+    density -1
+    mass 5000
+  }
+  boundingObject Cylinder {
+    height 2
+    radius 3
+  }
+}
+
+# Habitat Module 2
+SolidCylinder {
+  translation -5 0 1
+  name "habitat_module_2"
+  height 2
+  radius 3
+  appearance PBRAppearance {
+    baseColor 0.9 0.9 0.9
+    roughness 0.3
+    metalness 0.7
+  }
+  physics Physics {
+    density -1
+    mass 5000
+  }
+  boundingObject Cylinder {
+    height 2
+    radius 3
+  }
+}
+
+# Connecting Corridor
+SolidBox {
+  translation 0 0 0.5
+  name "corridor"
+  size 8 2 1
+  appearance PBRAppearance {
+    baseColor 0.7 0.8 0.9
+    roughness 0.3
+    metalness 0.6
+  }
+  physics Physics {
+    density -1
+    mass 2000
+  }
+  boundingObject Box {
+    size 8 2 1
+  }
+}
+
+# Solar Panel Array
+SolidBox {
+  translation 10 0 1
+  rotation 0 0 1 0.3
+  name "solar_panel_1"
+  size 3 2 0.1
+  appearance PBRAppearance {
+    baseColor 0.1 0.1 0.3
+    roughness 0.1
+    metalness 0.9
+  }
+  physics Physics {
+    density -1
+    mass 100
+  }
+  boundingObject Box {
+    size 3 2 0.1
+  }
+}
+
+# Communication Antenna
+SolidCylinder {
+  translation 0 8 2
+  name "antenna"
+  height 4
+  radius 0.1
+  appearance PBRAppearance {
+    baseColor 0.8 0.2 0.2
+    roughness 0.2
+    metalness 0.8
+  }
+  physics Physics {
+    density -1
+    mass 50
+  }
+  boundingObject Cylinder {
+    height 4
+    radius 0.1
+  }
+}
+
+# Equipment Storage Container
+WoodenBox {
+  translation 8 5 0.5
+  name "storage_container"
+  size 2 1 1
+  mass 500
+}
+
+# Lunar Rocks and Obstacles
+SolidSphere {
+  translation 2 3 0.4
+  name "rock_1"
+  radius 0.4
+  appearance PBRAppearance {
+    baseColor 0.4 0.4 0.4
+    roughness 0.9
+    metalness 0.1
+  }
+  physics Physics {
+    density -1
+    mass 200
+  }
+  boundingObject Sphere {
+    radius 0.4
+  }
+}
+
+SolidBox {
+  translation -3 -2 0.3
+  name "rock_2"
+  size 0.8 0.6 0.6
+  appearance PBRAppearance {
+    baseColor 0.3 0.3 0.3
+    roughness 0.9
+    metalness 0.1
+  }
+  physics Physics {
+    density -1
+    mass 150
+  }
+  boundingObject Box {
+    size 0.8 0.6 0.6
+  }
+}
+
+SolidSphere {
+  translation -8 6 0.3
+  name "rock_3"
+  radius 0.3
+  appearance PBRAppearance {
+    baseColor 0.5 0.4 0.3
+    roughness 0.8
+    metalness 0.1
+  }
+  physics Physics {
+    density -1
+    mass 100
+  }
+  boundingObject Sphere {
+    radius 0.3
+  }
+}
+
+# Crater (represented as a depression)
+SolidCylinder {
+  translation -8 -8 -0.5
+  name "crater_1"
+  height 1
+  radius 2
+  appearance PBRAppearance {
+    baseColor 0.2 0.2 0.2
+    roughness 1.0
+    metalness 0.0
+  }
+  physics Physics {
+    density -1
+    mass 1000
+  }
+  boundingObject Cylinder {
+    height 1
+    radius 2
+  }
+}
+
+# Waypoint Markers
+SolidCylinder {
+  translation 3 3 0.1
+  name "waypoint_1"
+  height 0.2
+  radius 0.2
+  appearance PBRAppearance {
+    baseColor 0.2 0.8 0.2
+    roughness 0.3
+    metalness 0.5
+    emissiveColor 0.1 0.4 0.1
+  }
+  physics Physics {
+    density -1
+    mass 5
+  }
+  boundingObject Cylinder {
+    height 0.2
+    radius 0.2
+  }
+}
+
+SolidCylinder {
+  translation -3 3 0.1
+  name "waypoint_2"
+  height 0.2
+  radius 0.2
+  appearance PBRAppearance {
+    baseColor 0.2 0.8 0.2
+    roughness 0.3
+    metalness 0.5
+    emissiveColor 0.1 0.4 0.1
+  }
+  physics Physics {
+    density -1
+    mass 5
+  }
+  boundingObject Cylinder {
+    height 0.2
+    radius 0.2
+  }
+}
+
+# Additional Equipment
+SolidBox {
+  translation 6 -4 0.25
+  name "equipment_box_1"
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 0.8 0.6 0.2
+    roughness 0.4
+    metalness 0.6
+  }
+  physics Physics {
+    density -1
+    mass 25
+  }
+  boundingObject Box {
+    size 0.5 0.5 0.5
+  }
+}
+
+SolidBox {
+  translation -6 -4 0.25
+  name "equipment_box_2"
+  size 0.5 0.5 0.5
+  appearance PBRAppearance {
+    baseColor 0.8 0.6 0.2
+    roughness 0.4
+    metalness 0.6
+  }
+  physics Physics {
+    density -1
+    mass 25
+  }
+  boundingObject Box {
+    size 0.5 0.5 0.5
+  }
+}
+
+# LunaBot Robot Definition
+Robot {
+  translation 0 0 0.2
+  rotation 0 0 1 0
+  name "lunabot"
+  model "LunaBot Lunar Navigation Robot"
+  description "Autonomous navigation robot for lunar habitat operations"
+  contactMaterial "lunar_surface"
+  boundingObject Group {
+    children [
+      Transform {
+        translation 0 0 0
+        children [
+          Box {
+            size 0.8 0.6 0.2
+          }
+        ]
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 20
+    centerOfMass [
+      0 0 0
+    ]
+    inertiaMatrix [
+      1.0 1.0 1.0
+      0 0 0
+    ]
+  }
+  children [
+    # Main Body
+    Transform {
+      translation 0 0 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 1.0
+            roughness 0.3
+            metalness 0.7
+          }
+          geometry Box {
+            size 0.8 0.6 0.2
+          }
+        }
+      ]
+    }
+    
+    # Wheels
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+        anchor 0.25 0.35 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "left_front_wheel_motor"
+          maxVelocity 10
+          maxTorque 10
+        }
+        PositionSensor {
+          name "left_front_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.25 0.35 -0.05
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              roughness 0.8
+              metalness 0.2
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.15
+            }
+          }
+        ]
+        name "left_front_wheel"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.15
+        }
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+    
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+        anchor 0.25 -0.35 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "right_front_wheel_motor"
+          maxVelocity 10
+          maxTorque 10
+        }
+        PositionSensor {
+          name "right_front_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.25 -0.35 -0.05
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              roughness 0.8
+              metalness 0.2
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.15
+            }
+          }
+        ]
+        name "right_front_wheel"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.15
+        }
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+    
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+        anchor -0.25 0.35 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "left_rear_wheel_motor"
+          maxVelocity 10
+          maxTorque 10
+        }
+        PositionSensor {
+          name "left_rear_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.25 0.35 -0.05
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              roughness 0.8
+              metalness 0.2
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.15
+            }
+          }
+        ]
+        name "left_rear_wheel"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.15
+        }
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+    
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 1 0
+        anchor -0.25 -0.35 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "right_rear_wheel_motor"
+          maxVelocity 10
+          maxTorque 10
+        }
+        PositionSensor {
+          name "right_rear_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.25 -0.35 -0.05
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              roughness 0.8
+              metalness 0.2
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.15
+            }
+          }
+        ]
+        name "right_rear_wheel"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.15
+        }
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+    
+    # LiDAR Sensor
+    Transform {
+      translation 0 0 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1.0 0.2 0.2
+            roughness 0.3
+            metalness 0.8
+          }
+          geometry Cylinder {
+            height 0.1
+            radius 0.05
+          }
+        }
+        Lidar {
+          translation 0 0 0.05
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.8 0.1 0.1
+                roughness 0.2
+                metalness 0.9
+              }
+              geometry Cylinder {
+                height 0.02
+                radius 0.03
+              }
+            }
+          ]
+          name "lidar"
+          model "Velodyne HDL-32E"
+          fieldOfView 6.28318
+          verticalFieldOfView 0.4363
+          numberOfLayers 32
+          near 0.1
+          minRange 0.1
+          maxRange 30.0
+          noise 0.01
+          resolution 0.017453
+        }
+      ]
+    }
+    
+    # Camera
+    Transform {
+      translation 0.4 0 0.05
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.9 0.9
+            roughness 0.3
+            metalness 0.5
+          }
+          geometry Box {
+            size 0.05 0.1 0.05
+          }
+        }
+        Camera {
+          translation 0.025 0 0
+          name "camera"
+          model "generic camera"
+          fieldOfView 1.3962634
+          width 800
+          height 600
+          near 0.02
+          far 300
+          noise 0.007
+        }
+      ]
+    }
+    
+    # IMU Sensor
+    InertialUnit {
+      name "imu"
+      noise 0.01
+    }
+    
+    # GPS (for ground truth, disabled in lunar environment)
+    GPS {
+      name "gps"
+      accuracy 0.1
+    }
+    
+    # Compass
+    Compass {
+      name "compass"
+      accuracy 0.1
+    }
+  ]
+  controller "lunabot_controller"
+  controllerArgs [
+    "--node-name=lunabot_driver"
+  ]
+  supervisor FALSE
+}
+
+# Physics Plugin for Lunar Environment
+DEF LUNAR_PHYSICS Physics {
+  gravity 0 0 -1.62
+  cfm 1e-5
+  erp 0.2
+  contactProperties [
+    ContactProperties {
+      material1 "lunar_surface"
+      material2 "default"
+      coulombFriction [
+        0.1
+      ]
+      bounce 0.1
+      bounceVelocity 0.01
+      softCFM 0.001
+      softERP 0.2
+    }
+  ]
+}
+

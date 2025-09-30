@@ -43,7 +43,7 @@
   <depend>robot_localization</depend>
 
   <!-- Simulation -->
-  <depend>gazebo_ros_pkgs</depend>
+  <depend>webots_ros2</depend>
   <depend>robot_state_publisher</depend>
   <depend>joint_state_publisher</depend>
   <depend>urdf</depend>

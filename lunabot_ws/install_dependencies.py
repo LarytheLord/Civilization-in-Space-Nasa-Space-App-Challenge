@@ -44,7 +44,7 @@ def main():
         "ros-{}-slam-toolbox",
         "ros-{}-cartographer-ros",
         "ros-{}-robot-localization",
-        "ros-{}-gazebo-ros-pkgs",
+        "ros-{}-webots-ros2",
         "ros-{}-joint-state-publisher",
         "ros-{}-robot-state-publisher",
         "ros-{}-rviz2",
@@ -74,6 +74,14 @@ def main():
         "fastapi",
         "uvicorn"
     ]
+    
+    # Additional Webots installation note
+    print("\n📋 Additional Setup Required:")
+    print("1. Download and install Webots from: https://cyberbotics.com/")
+    print("2. Add Webots to your PATH environment variable")
+    print("3. Install Webots ROS2 interface:")
+    print("   sudo apt install ros-{}-webots-ros2".format(ros_distro))
+    print("   OR pip3 install webots-ros2-driver")
     
     # Install Python packages
     pip_command = f"pip3 install {' '.join(python_deps)}"
