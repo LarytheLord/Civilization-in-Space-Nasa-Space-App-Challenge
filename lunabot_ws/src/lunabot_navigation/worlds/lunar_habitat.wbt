@@ -647,7 +647,7 @@ Robot {
       accuracy 0.1
     }
   ]
-  controller "lunabot_controller"
+  controller "void"
   controllerArgs [
     "--node-name=lunabot_driver"
   ]

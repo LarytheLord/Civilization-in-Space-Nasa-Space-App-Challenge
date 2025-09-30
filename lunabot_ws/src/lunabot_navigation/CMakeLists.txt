@@ -29,6 +29,7 @@ install(PROGRAMS
   scripts/sensor_fusion_node.py
   scripts/habitat_monitor.py
   scripts/maintenance_patrol.py
+  scripts/lunabot_controller.py
   scripts/ai_decision_engine.py
   scripts/demo_controller.py
   DESTINATION lib/${PROJECT_NAME}
