@@ -25,7 +25,7 @@ def run_command(command, description):
         return False
 
 def main():
-    print("🌙 LunaBot Project Setup - Installing Dependencies")
+    print("LunaBot Project Setup - Installing Dependencies")
     print("=" * 50)
     
     # Check if ROS2 is installed

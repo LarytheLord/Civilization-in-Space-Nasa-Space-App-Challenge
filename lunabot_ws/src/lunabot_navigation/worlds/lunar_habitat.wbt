@@ -1,12 +1,11 @@
 #VRML_SIM R2023b utf8
 
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidBox.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidSphere.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/solids/protos/SolidCylinder.proto"
+EXTERNPROTO "protos/TexturedBackground.proto"
+EXTERNPROTO "protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "protos/RectangleArena.proto"
+EXTERNPROTO "protos/WoodenBox.proto"
+EXTERNPROTO "protos/SolidBox.proto"
+
 
 WorldInfo {
   info [
@@ -66,16 +65,22 @@ RectangleArena {
 }
 
 # Habitat Module 1
-SolidCylinder {
+Solid {
   translation 5 0 1
   name "habitat_module_1"
-  height 2
-  radius 3
-  appearance PBRAppearance {
-    baseColor 0.9 0.9 0.9
-    roughness 0.3
-    metalness 0.7
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.9 0.9
+        roughness 0.3
+        metalness 0.7
+      }
+      geometry Cylinder {
+        height 2
+        radius 3
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 5000
@@ -87,16 +92,22 @@ SolidCylinder {
 }
 
 # Habitat Module 2
-SolidCylinder {
+Solid {
   translation -5 0 1
   name "habitat_module_2"
-  height 2
-  radius 3
-  appearance PBRAppearance {
-    baseColor 0.9 0.9 0.9
-    roughness 0.3
-    metalness 0.7
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.9 0.9
+        roughness 0.3
+        metalness 0.7
+      }
+      geometry Cylinder {
+        height 2
+        radius 3
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 5000
@@ -147,16 +158,22 @@ SolidBox {
 }
 
 # Communication Antenna
-SolidCylinder {
+Solid {
   translation 0 8 2
   name "antenna"
-  height 4
-  radius 0.1
-  appearance PBRAppearance {
-    baseColor 0.8 0.2 0.2
-    roughness 0.2
-    metalness 0.8
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.8 0.2 0.2
+        roughness 0.2
+        metalness 0.8
+      }
+      geometry Cylinder {
+        height 4
+        radius 0.1
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 50
@@ -176,15 +193,21 @@ WoodenBox {
 }
 
 # Lunar Rocks and Obstacles
-SolidSphere {
+Solid {
   translation 2 3 0.4
   name "rock_1"
-  radius 0.4
-  appearance PBRAppearance {
-    baseColor 0.4 0.4 0.4
-    roughness 0.9
-    metalness 0.1
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.4 0.4 0.4
+        roughness 0.9
+        metalness 0.1
+      }
+      geometry Sphere {
+        radius 0.4
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 200
@@ -212,15 +235,21 @@ SolidBox {
   }
 }
 
-SolidSphere {
+Solid {
   translation -8 6 0.3
   name "rock_3"
-  radius 0.3
-  appearance PBRAppearance {
-    baseColor 0.5 0.4 0.3
-    roughness 0.8
-    metalness 0.1
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 0.4 0.3
+        roughness 0.8
+        metalness 0.1
+      }
+      geometry Sphere {
+        radius 0.3
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 100
@@ -231,16 +260,22 @@ SolidSphere {
 }
 
 # Crater (represented as a depression)
-SolidCylinder {
+Solid {
   translation -8 -8 -0.5
   name "crater_1"
-  height 1
-  radius 2
-  appearance PBRAppearance {
-    baseColor 0.2 0.2 0.2
-    roughness 1.0
-    metalness 0.0
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.2 0.2
+        roughness 1.0
+        metalness 0.0
+      }
+      geometry Cylinder {
+        height 1
+        radius 2
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 1000
@@ -252,17 +287,23 @@ SolidCylinder {
 }
 
 # Waypoint Markers
-SolidCylinder {
+Solid {
   translation 3 3 0.1
   name "waypoint_1"
-  height 0.2
-  radius 0.2
-  appearance PBRAppearance {
-    baseColor 0.2 0.8 0.2
-    roughness 0.3
-    metalness 0.5
-    emissiveColor 0.1 0.4 0.1
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.8 0.2
+        roughness 0.3
+        metalness 0.5
+        emissiveColor 0.1 0.4 0.1
+      }
+      geometry Cylinder {
+        height 0.2
+        radius 0.2
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 5
@@ -273,17 +314,23 @@ SolidCylinder {
   }
 }
 
-SolidCylinder {
+Solid {
   translation -3 3 0.1
   name "waypoint_2"
-  height 0.2
-  radius 0.2
-  appearance PBRAppearance {
-    baseColor 0.2 0.8 0.2
-    roughness 0.3
-    metalness 0.5
-    emissiveColor 0.1 0.4 0.1
-  }
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.8 0.2
+        roughness 0.3
+        metalness 0.5
+        emissiveColor 0.1 0.4 0.1
+      }
+      geometry Cylinder {
+        height 0.2
+        radius 0.2
+      }
+    }
+  ]
   physics Physics {
     density -1
     mass 5
