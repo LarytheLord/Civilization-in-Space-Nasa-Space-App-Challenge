@@ -6,24 +6,33 @@ Launches Webots simulation with lunar habitat world and LunaBot robot
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 from webots_ros2_driver.webots_launcher import WebotsLauncher
-from webots_ros2_driver.webots_controller import WebotsController
+
+
+def launch_webots(context, *args, **kwargs):
+    """
+    OpaqueFunction to launch Webots.
+    This is necessary to resolve the LaunchConfiguration for the world file path.
+    """
+    world_file_path = LaunchConfiguration('world_file').perform(context)
+
+    webots = WebotsLauncher(
+        world=world_file_path,
+        ros2_supervisor=True
+    )
+    return [webots]
 
 def generate_launch_description():
     
     # Package directories
-    pkg_lunabot_navigation = FindPackageShare('lunabot_navigation')
+    pkg_lunabot_navigation = get_package_share_directory('lunabot_navigation')
     
     # Launch arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
-    world_file = LaunchConfiguration('world_file')
     robot_name = LaunchConfiguration('robot_name')
     x_pose = LaunchConfiguration('x_pose')
     y_pose = LaunchConfiguration('y_pose')
@@ -38,7 +47,7 @@ def generate_launch_description():
     
     declare_world_file_cmd = DeclareLaunchArgument(
         'world_file',
-        default_value=PathJoinSubstitution([pkg_lunabot_navigation, 'worlds', 'lunar_habitat.wbt']),
+        default_value=os.path.join(pkg_lunabot_navigation, 'worlds', 'lunar_habitat.wbt'),
         description='Full path to Webots world file to load'
     )
     
@@ -67,22 +76,18 @@ def generate_launch_description():
     )
     
     # Webots launcher
-    webots = WebotsLauncher(
-        world=world_file,
-        ros2_supervisor=True
-    )
+    webots_launcher_function = OpaqueFunction(function=launch_webots)
     
     # Robot controller
-    lunabot_controller = WebotsController(
-        robot_name='lunabot',
-        parameters=[
-            {'use_sim_time': use_sim_time},
-        ],
-        respawn=True
+    lunabot_driver_node = Node(
+        package='lunabot_navigation',
+        executable='lunabot_controller.py',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}]
     )
     
     # Robot state publisher (for TF tree)
-    urdf_file = PathJoinSubstitution([pkg_lunabot_navigation, 'urdf', 'lunabot.urdf.xacro'])
+    urdf_file = os.path.join(pkg_lunabot_navigation, 'urdf', 'lunabot.urdf.xacro')
     robot_description = Command(['xacro ', urdf_file])
     
     robot_state_publisher_node = Node(
@@ -97,7 +102,7 @@ def generate_launch_description():
     )
     
     # RViz2
-    rviz_config_file = PathJoinSubstitution([pkg_lunabot_navigation, 'config', 'lunabot_view.rviz'])
+    rviz_config_file = os.path.join(pkg_lunabot_navigation, 'config', 'lunabot_view.rviz')
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -119,8 +124,8 @@ def generate_launch_description():
     ld.add_action(declare_z_pose_cmd)
     
     # Add nodes
-    ld.add_action(webots)
-    ld.add_action(lunabot_controller)
+    ld.add_action(webots_launcher_function)
+    ld.add_action(lunabot_driver_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(rviz_node)
     
