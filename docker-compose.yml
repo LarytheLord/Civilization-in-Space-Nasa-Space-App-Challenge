@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./robot/lunabot_ws
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+      - "8765:8765"
+    environment:
+      - ROS_DOMAIN_ID=42
+    volumes:
+      - /dev/shm:/dev/shm  # For ROS2
+    networks:
+      - lunabot-network
+
+  frontend:
+    build: 
+      context: ./robot/frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - lunabot-network
+
+networks:
+  lunabot-network:
+    driver: bridge

@@ -32,6 +32,8 @@ install(PROGRAMS
   scripts/lunabot_controller.py
   scripts/ai_decision_engine.py
   scripts/demo_controller.py
+  scripts/habitat_site_analyzer.py
+  scripts/websocket_bridge.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

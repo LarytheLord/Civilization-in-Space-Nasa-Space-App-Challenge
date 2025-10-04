@@ -72,7 +72,9 @@ def main():
         "pyyaml",
         "transforms3d",
         "fastapi",
-        "uvicorn"
+        "uvicorn",
+        "websockets",
+        "aiohttp"
     ]
     
     # Additional Webots installation note

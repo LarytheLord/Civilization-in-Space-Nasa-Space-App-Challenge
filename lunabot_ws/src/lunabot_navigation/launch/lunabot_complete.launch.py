@@ -159,6 +159,34 @@ def generate_launch_description():
             )
         ]
     )
+
+    # 9. Habitat Site Analyzer
+    habitat_analyzer_node = TimerAction(
+        period=22.0,
+        actions=[
+            Node(
+                package='lunabot_navigation',
+                executable='habitat_site_analyzer.py',
+                name='habitat_site_analyzer',
+                output='screen',
+                parameters=[{'use_sim_time': use_sim_time}]
+            )
+        ]
+    )
+
+    # 10. WebSocket Bridge
+    websocket_bridge_node = TimerAction(
+        period=25.0,
+        actions=[
+            Node(
+                package='lunabot_navigation',
+                executable='websocket_bridge.py',
+                name='websocket_bridge',
+                output='screen',
+                parameters=[{'use_sim_time': use_sim_time}]
+            )
+        ]
+    )
     
     # Create launch description
     ld = LaunchDescription()
@@ -178,5 +206,7 @@ def generate_launch_description():
     ld.add_action(maintenance_patrol_node)
     ld.add_action(ai_decision_engine_node)
     ld.add_action(demo_controller_node)
+    ld.add_action(habitat_analyzer_node)
+    ld.add_action(websocket_bridge_node)
     
     return ld
