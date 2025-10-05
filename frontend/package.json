@@ -1,7 +1,9 @@
 {
   "name": "lunabot-frontend",
-  "version": "1.0.0",
-  "description": "LunaBot Habitat Site Selection Dashboard",
+  "version": "2.1.0",
+  "description": "LunaBot Autonomous Lunar Habitat Site Selection Dashboard - NASA Space Apps 2025",
+  "author": "LunaBot Team",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
@@ -10,18 +12,20 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "websocket": "^1.0.34",
-    "recharts": "^2.8.0",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
-    "lucide-react": "^0.292.0",
-    "three": "^0.157.0",
-    "react-three-fiber": "^6.0.13"
+    "typescript": "^5.0.0",
+    "recharts": "^2.15.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/node": "^20.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.27"
+  },
   "eslintConfig": {
     "extends": [
       "react-app"
@@ -38,5 +42,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "keywords": [
+    "nasa",
+    "space-apps",
+    "lunar",
+    "autonomous",
+    "robotics",
+    "ai",
+    "mission-control",
+    "artemis"
+  ]
 }

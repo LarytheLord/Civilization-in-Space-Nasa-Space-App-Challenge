@@ -3,170 +3,256 @@ import SiteAnalysisPanel from './components/SiteAnalysisPanel';
 import SensorDashboard from './components/SensorDashboard';
 import TerrainMap from './components/TerrainMap';
 import SiteComparison from './components/SiteComparison';
-import { useWebSocket } from './hooks/useWebSocket';
+import AllSensorsPanel from './components/AllSensorsPanel';
+import MissionControlPanel from './components/MissionControlPanel';
+import DecisionLayerPanel from './components/DecisionLayerPanel';
+import mockDataService, { SensorData, Site, MissionLog } from './utils/mockDataService';
 
 const App: React.FC = () => {
-  const { data, connected } = useWebSocket('ws://localhost:8765');
-  
-  const [sites, setSites] = useState<any[]>([]);
+  const [sites, setSites] = useState<Site[]>([]);
   const [robotPosition, setRobotPosition] = useState({ x: 0, y: 0 });
-  const [habitatData, setHabitatData] = useState<any>(null);
+  const [sensorData, setSensorData] = useState<SensorData | null>(null);
+  const [missionLogs, setMissionLogs] = useState<MissionLog[]>([]);
+  const [historicalData, setHistoricalData] = useState<Array<{time: string; radiation: number; temperature: number; seismic: number}>>([]);
+  const [activeTab, setActiveTab] = useState<'overview' | 'sensors' | 'sites' | 'decision'>('overview');
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    if (data.sites) {
-      setSites(data.sites.sites || []);
-      if (data.sites.robot_position) {
-        setRobotPosition(data.sites.robot_position);
-      }
+    // Start mock data simulation
+    mockDataService.startSimulation((data) => {
+      setSites(data.sites);
+      setSensorData(data.sensors);
+      setMissionLogs(data.logs);
+      setRobotPosition({
+        x: data.sensors.navigation.position.x,
+        y: data.sensors.navigation.position.y
+      });
+      
+      // Update historical data for charts
+      setHistoricalData(prev => {
+        const newData = [...prev, {
+          time: new Date().toLocaleTimeString(),
+          radiation: data.sensors.radiation.total,
+          temperature: data.sensors.thermal.surface,
+          seismic: data.sensors.seismic.magnitude
+        }];
+        // Keep only last 20 data points
+        return newData.slice(-20);
+      });
+    });
+    
+    // Update clock
+    const clockInterval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    
+    return () => {
+      mockDataService.stopSimulation();
+      clearInterval(clockInterval);
+    };
+  }, []);
+
+  if (!sensorData) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#020617] text-gray-100">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-xl font-bold text-cyan-400">INITIALIZING LUNABOT SYSTEMS...</div>
+        </div>
+      </div>
+    );
+  }
+
+  const connected = true; // Always show as connected with mock data
+  const habitatData = {
+    environmental_parameters: {
+      temperature: sensorData.thermal.surface,
+      radiation: sensorData.radiation.total * 100,
+      co2: 0.04,
+      o2: 20.9
     }
-    if (data.habitat) {
-      setHabitatData(data.habitat);
-    }
-  }, [data]);
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-[#020617] text-gray-100 overflow-hidden font-mono">
-      {/* Matrix-style background */}
-      <div className="matrix-bg" id="matrix-bg"></div>
+    <div className="flex flex-col h-screen bg-gradient-to-br from-black via-[#0a0e1a] to-[#0f1419] text-gray-100 overflow-hidden font-mono">
+      {/* Subtle background grid */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none" style={{
+        backgroundImage: 'linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px)',
+        backgroundSize: '50px 50px'
+      }}></div>
       
       {/* Top Status Bar */}
-      <div className="bg-[#020617]/80 backdrop-blur-md border-b border-cyan-500/30 p-2 flex items-center justify-between text-xs">
+      <div className="relative bg-gradient-to-r from-black/90 via-[#0a0e1a]/90 to-black/90 backdrop-blur-md border-b border-white/10 p-2 flex items-center justify-between text-xs z-10 shadow-lg">
         <div className="flex items-center space-x-6">
           <div className="flex items-center">
-            <div className={`status-indicator ${connected ? 'status-active' : 'status-critical'}`}></div>
-            <span className={`${connected ? 'text-green-400' : 'text-red-400'}`}>ROBOT CONNECTION: {connected ? 'ONLINE' : 'OFFLINE'}</span>
+            <div className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse shadow-lg shadow-emerald-400/50"></div>
+            <span className="text-emerald-400 font-semibold">LUNABOT STATUS: OPERATIONAL</span>
           </div>
-          <div>POS: ({robotPosition.x.toFixed(2)}, {robotPosition.y.toFixed(2)})</div>
-          <div>MISSION: LUNAR HABITAT SELECTION</div>
+          <div className="text-blue-300">POS: ({robotPosition.x.toFixed(2)}, {robotPosition.y.toFixed(2)})</div>
+          <div className="text-slate-300">MISSION: LUNAR HABITAT SELECTION</div>
+          <div className="text-amber-400">SITES ANALYZED: {sites.length}</div>
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
-            <div className="status-indicator status-active"></div>
-            <span className="text-green-400">SYSTEMS NOMINAL</span>
+            <div className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse shadow-lg shadow-emerald-400/50"></div>
+            <span className="text-emerald-400 font-semibold">ALL SYSTEMS NOMINAL</span>
           </div>
-          <div>TIME: {new Date().toLocaleTimeString()}</div>
+          <div className="text-slate-400 font-mono">
+            {currentTime.toLocaleDateString()} | {currentTime.toLocaleTimeString()}
+          </div>
         </div>
       </div>
       
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Left Panel: Simulation View */}
-        <div className="w-1/2 p-3 border-r border-cyan-500/20 flex flex-col">
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-cyan-500/30">
-            <h2 className="text-lg font-bold text-cyan-400 flex items-center">
-              <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-              LUNAR SIMULATION FEED
-            </h2>
-            <div className="text-xs text-gray-400">LIVE</div>
-          </div>
-          
-          <div className="flex-1 bg-[#0f172a]/70 backdrop-blur border border-cyan-500/20 rounded-lg relative overflow-hidden scanning-line holographic-border">
-            {/* Scanning grid lines */}
-            <div className="absolute inset-0 opacity-10" style={{
-              backgroundImage: `linear-gradient(rgba(6, 182, 212, 0.3) 1px, transparent 1px),
-                                linear-gradient(90deg, rgba(6, 182, 212, 0.3) 1px, transparent 1px)`,
-              backgroundSize: '40px 40px'
-            }}></div>
-            
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 flex items-center justify-center border-2 border-cyan-500/50">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+      {/* Main Header */}
+      <div className="relative px-6 py-4 border-b border-white/10 bg-gradient-to-b from-[#0a0e1a]/50 to-transparent backdrop-blur-sm">
+        <div className="text-center mb-3">
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-slate-300 tracking-wide drop-shadow-lg" style={{
+            textShadow: '0 0 30px rgba(59, 130, 246, 0.3)'
+          }}>
+            LUNABOT MISSION CONTROL
+          </h1>
+          <div className="text-sm text-slate-400 font-light">Autonomous Lunar Habitat Site Selection System</div>
+        </div>
+        
+        {/* Navigation Tabs */}
+        <div className="flex justify-center space-x-2">
+            {[
+              { id: 'overview', label: 'MISSION OVERVIEW' },
+              { id: 'sensors', label: 'ALL SENSORS' },
+              { id: 'sites', label: 'SITE ANALYSIS' },
+              { id: 'decision', label: 'AI DECISION LAYER' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-4 py-2 rounded text-xs font-semibold tracking-wide transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600/80 text-white border border-blue-400/30'
+                    : 'bg-white/5 text-slate-400 border border-white/10 hover:border-white/20 hover:bg-white/10 hover:text-slate-200'
+                }`}
+              >
+                {tab.label}
+                </button>
+            ))}
+        </div>
+      </div>
+      
+      {/* Main Content Area - Tabbed */}
+      <div className="flex-1 overflow-hidden p-4">
+        {activeTab === 'overview' && (
+          <div className="h-full grid grid-rows-[auto_1fr] gap-4 overflow-y-auto">
+            {/* Top Row - Mission Control & Terrain Map */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-3">
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-slate-800/40 backdrop-blur-md border border-white/10 rounded-lg p-3 text-center overflow-hidden group hover:border-white/20 transition-all">
+                  <div className="relative">
+                    <div className="text-xs text-slate-400 font-medium mb-1">POWER</div>
+                    <div className="text-2xl font-semibold text-slate-200">{sensorData.power.battery.toFixed(0)}%</div>
+                  </div>
                 </div>
-                <div className="text-cyan-400 text-xl font-bold mb-2">LUNAR OPERATIONS</div>
-                <div className="text-gray-400 text-sm">Real-time telemetry from LunaBot</div>
-                
-                <div className="mt-8 grid grid-cols-2 gap-4 max-w-xs mx-auto">
-                  <div className="bg-[#0f172a]/80 p-3 rounded border border-cyan-500/30">
-                    <div className="text-xs text-cyan-400">X COORD</div>
-                    <div className="text-lg font-mono text-cyan-300">{robotPosition.x.toFixed(2)}</div>
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-slate-800/40 backdrop-blur-md border border-white/10 rounded-lg p-3 text-center overflow-hidden group hover:border-white/20 transition-all">
+                  <div className="relative">
+                    <div className="text-xs text-slate-400 font-medium mb-1">SPEED</div>
+                    <div className="text-2xl font-semibold text-slate-200">{sensorData.navigation.speed.toFixed(1)}</div>
+                    <div className="text-[10px] text-slate-500">m/s</div>
                   </div>
-                  <div className="bg-[#0f172a]/80 p-3 rounded border border-cyan-500/30">
-                    <div className="text-xs text-cyan-400">Y COORD</div>
-                    <div className="text-lg font-mono text-cyan-300">{robotPosition.y.toFixed(2)}</div>
+                </div>
+                <div className="relative bg-gradient-to-br from-slate-900/60 to-slate-800/40 backdrop-blur-md border border-white/10 rounded-lg p-3 text-center overflow-hidden group hover:border-white/20 transition-all">
+                  <div className="relative">
+                    <div className="text-xs text-slate-400 font-medium mb-1">RADIATION</div>
+                    <div className="text-2xl font-semibold text-slate-200">{sensorData.radiation.total.toFixed(2)}</div>
+                    <div className="text-[10px] text-slate-500">mSv/h</div>
                   </div>
+                </div>
+                <div className="relative bg-gradient-to-br from-blue-950/30 to-slate-800/40 backdrop-blur-md border border-blue-500/20 rounded-lg p-3 text-center overflow-hidden group hover:border-blue-400/30 transition-all">
+                  <div className="relative">
+                    <div className="text-xs text-blue-400 font-medium mb-1">BEST SITE</div>
+                    <div className="text-2xl font-semibold text-blue-300">{sites[0]?.total_score.toFixed(1)}</div>
+                  </div>
+                </div>
+            </div>
+              
+              {/* Terrain Map */}
+              <div className="lg:col-span-2">
+                <div className="data-panel holographic-border h-full">
+                  <div className="flex items-center mb-3 pb-2 border-b border-white/10">
+                    <div className="w-1 h-4 bg-blue-400 rounded-full mr-2"></div>
+                    <h3 className="text-sm font-semibold text-slate-200 tracking-wide">TERRAIN MAP</h3>
+                  </div>
+                  <TerrainMap sites={sites} robotPosition={robotPosition} />
                 </div>
               </div>
             </div>
+            
+            {/* Mission Control Panel */}
+            <MissionControlPanel logs={missionLogs} navigationData={sensorData.navigation} />
           </div>
-          
-          {/* Status Panel */}
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            <div className="bg-[#0f172a]/70 border border-cyan-500/20 rounded p-2 text-center">
-              <div className="text-xs text-gray-400">POWER</div>
-              <div className="text-sm font-mono text-green-400">98%</div>
-            </div>
-            <div className="bg-[#0f172a]/70 border border-cyan-500/20 rounded p-2 text-center">
-              <div className="text-xs text-gray-400">SIGNAL</div>
-              <div className="text-sm font-mono text-green-400">STRONG</div>
-            </div>
-            <div className="bg-[#0f172a]/70 border border-cyan-500/20 rounded p-2 text-center">
-              <div className="text-xs text-gray-400">SPEED</div>
-              <div className="text-sm font-mono text-yellow-400">1.2 m/s</div>
-            </div>
-            <div className="bg-[#0f172a]/70 border border-cyan-500/20 rounded p-2 text-center">
-              <div className="text-xs text-gray-400">STATUS</div>
-              <div className="text-sm font-mono text-green-400">ACTIVE</div>
-            </div>
-          </div>
-        </div>
+        )}
         
-        {/* Right Panel: Dashboard */}
-        <div className="w-1/2 flex flex-col p-3 overflow-y-auto">
-          <div className="mb-4 text-center">
-            <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-wider">
-              LUNABOT MISSION CONTROL
-            </h1>
-            <div className="text-sm text-gray-400">LUNAR HABITAT SELECTION DASHBOARD</div>
+        {activeTab === 'sensors' && (
+          <div className="h-full overflow-y-auto">
+            <AllSensorsPanel sensorData={sensorData} historicalData={historicalData} />
           </div>
-          
-          <div className="space-y-4 overflow-y-auto">
+        )}
+        
+        {activeTab === 'sites' && (
+          <div className="h-full overflow-y-auto space-y-4">
             {/* Site Analysis Panel */}
             <div className="data-panel holographic-border">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                <h3 className="text-lg font-bold text-green-400">HABITAT SITE ANALYSIS</h3>
+              <div className="flex items-center mb-3 pb-2 border-b border-white/10">
+                <div className="w-1 h-4 bg-blue-400 rounded-full mr-2"></div>
+                <h3 className="text-base font-semibold text-slate-200 tracking-wide">HABITAT SITE ANALYSIS</h3>
               </div>
               <SiteAnalysisPanel sites={sites} />
             </div>
             
-            {/* Sensor Dashboard */}
-            <div className="data-panel holographic-border">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2 animate-pulse"></div>
-                <h3 className="text-lg font-bold text-yellow-400">ENVIRONMENTAL SENSORS</h3>
-              </div>
-              <SensorDashboard habitatData={habitatData} />
-            </div>
-            
             {/* Site Comparison */}
             <div className="data-panel holographic-border">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-purple-500 rounded-full mr-2 animate-pulse"></div>
-                <h3 className="text-lg font-bold text-purple-400">SITE COMPARISON MATRIX</h3>
+              <div className="flex items-center mb-3 pb-2 border-b border-white/10">
+                <div className="w-1 h-4 bg-blue-400 rounded-full mr-2"></div>
+                <h3 className="text-base font-semibold text-slate-200 tracking-wide">SITE COMPARISON MATRIX</h3>
               </div>
               <SiteComparison sites={sites} />
             </div>
             
-            {/* 3D Terrain Visualization */}
+            {/* Environmental Sensors */}
             <div className="data-panel holographic-border">
-              <div className="flex items-center mb-3">
-                <div className="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></div>
-                <h3 className="text-lg font-bold text-red-400">TERRAIN ANALYSIS MAP</h3>
+              <div className="flex items-center mb-3 pb-2 border-b border-white/10">
+                <div className="w-1 h-4 bg-blue-400 rounded-full mr-2"></div>
+                <h3 className="text-base font-semibold text-slate-200 tracking-wide">ENVIRONMENTAL SENSORS</h3>
               </div>
-              <TerrainMap sites={sites} robotPosition={robotPosition} />
+              <SensorDashboard habitatData={habitatData} />
             </div>
           </div>
-        </div>
+        )}
+        
+        {activeTab === 'decision' && (
+          <div className="h-full overflow-y-auto">
+            <DecisionLayerPanel currentSite={sites[0]} />
+          </div>
+        )}
       </div>
       
       {/* Bottom Status Bar */}
-      <div className="bg-[#020617]/80 backdrop-blur-md border-t border-cyan-500/30 p-2 text-xs flex justify-between">
-        <div>LUNABOT v2.1.0 | LUNAR HABITAT MISSION</div>
-        <div>STATUS: <span className="text-green-400">OPERATIONAL</span></div>
-        <div>DATA STREAM: {sites.length} SITES ANALYZED</div>
+      <div className="relative bg-gradient-to-r from-black/90 via-[#0a0e1a]/90 to-black/90 backdrop-blur-md border-t border-white/10 p-2 text-xs flex justify-between items-center z-10 shadow-lg">
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center">
+            <span className="text-blue-400 font-bold">LUNABOT v2.1.0</span>
+          </div>
+          <div className="text-slate-400">NASA SPACE APPS CHALLENGE 2025</div>
+          <div>MISSION: <span className="text-slate-300">LUNAR HABITAT SELECTION</span></div>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div>SITES: <span className="text-emerald-400 font-semibold">{sites.length} ANALYZED</span></div>
+          <div className="flex items-center">
+            <span className="text-slate-400 mr-2">STATUS:</span>
+            <span className="text-emerald-400 font-semibold flex items-center">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse shadow-lg shadow-emerald-400/50"></span>
+              OPERATIONAL
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
