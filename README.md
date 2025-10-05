@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-LunaBot is an advanced autonomous robotic system designed for lunar habitat operations, developed for the Smart India Hackathon 2025. This ROS2-based system demonstrates comprehensive capabilities for navigation, monitoring, and maintenance in challenging lunar environments.
+LunaBot is an advanced autonomous robotic system designed for lunar habitat operations, developed for the NASA Space Apps Challenge 2025. This ROS2-based system demonstrates comprehensive capabilities for navigation, monitoring, and maintenance in challenging lunar environments.
 
 ## 🚀 Features
 
@@ -145,7 +145,7 @@ npm start
 
 ## 🤝 Contributing
 
-This project was developed for SIH 2025. For improvements:
+This project was developed for NASA Space Apps Challenge 2025. For improvements:
 
 1. Fork the repository
 2. Create feature branch
@@ -154,7 +154,7 @@ This project was developed for SIH 2025. For improvements:
 
 ## 📄 License
 
-This project is developed for Smart India Hackathon 2025 under the guidance of ISRO/DoS.
+This project is developed for NASA Space Apps Challenge 2025, supporting NASA's Artemis program and future lunar exploration missions.
 
 ## 🏆 Achievements
 
@@ -169,9 +169,9 @@ This project is developed for Smart India Hackathon 2025 under the guidance of I
 
 ---
 
-**Developed for Smart India Hackathon 2025**  
-**Problem Statement ID: 25169**  
-**Organization: Indian Space Research Organisation (ISRO)**  
-**Theme: Space Technology**
+**Developed for NASA Space Apps Challenge 2025**  
+**Challenge: Lunar Habitat Site Selection & Autonomous Exploration**  
+**Organization: NASA (National Aeronautics and Space Administration)**  
+**Theme: Space Exploration & Robotics**
 
 🌙 **LunaBot - Pioneering Autonomous Lunar Operations** 🚀

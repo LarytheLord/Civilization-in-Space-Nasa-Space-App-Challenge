@@ -2,15 +2,15 @@
 
 ## 🌙 Project Overview
 
-LunaBot is an advanced autonomous robotic system designed for lunar habitat operations, developed for the Smart India Hackathon 2025. This ROS2-based system demonstrates comprehensive capabilities for navigation, monitoring, and maintenance in challenging lunar environments.
+LunaBot is an advanced autonomous robotic system designed for lunar habitat operations, developed for the NASA Space Apps Challenge 2025. This ROS2-based system demonstrates comprehensive capabilities for navigation, monitoring, and maintenance in challenging lunar environments.
 
-### 🎯 Problem Statement (ID: 25169)
-Design and develop a ROS-based autonomous robot prototype capable of:
-- Navigating indoor and outdoor lunar habitat environments
+### 🎯 NASA Space Apps Challenge
+Design and develop a ROS-based autonomous robot prototype to support NASA's Artemis program, capable of:
+- Navigating lunar habitat environments for site selection and monitoring
 - Mapping and localizing using sensor fusion (LiDAR, cameras, IMU)
 - Detecting obstacles and hazards for safe path planning
-- Monitoring habitat environmental parameters
-- Demonstrating basic maintenance tasks and alert signaling
+- Monitoring environmental parameters for habitat suitability
+- Autonomous site analysis and habitat location selection
 
 ## 🚀 Key Features
 
@@ -309,7 +309,7 @@ Expected system performance:
 
 ## 🤝 Contributing
 
-This project was developed for SIH 2025. For improvements:
+This project was developed for NASA Space Apps Challenge 2025. For improvements:
 
 1. Fork the repository
 2. Create feature branch
@@ -318,7 +318,7 @@ This project was developed for SIH 2025. For improvements:
 
 ## 📄 License
 
-This project is developed for Smart India Hackathon 2025 under the guidance of ISRO/DoS.
+This project is developed for NASA Space Apps Challenge 2025, supporting NASA's Artemis program and future lunar exploration missions.
 
 ## 🏆 Achievements
 
@@ -356,9 +356,9 @@ Potential improvements for production deployment:
 
 ---
 
-**Developed for Smart India Hackathon 2025**  
-**Problem Statement ID: 25169**  
-**Organization: Indian Space Research Organisation (ISRO)**  
-**Theme: Space Technology**
+**Developed for NASA Space Apps Challenge 2025**  
+**Challenge: Lunar Habitat Site Selection & Autonomous Exploration**  
+**Organization: NASA (National Aeronautics and Space Administration)**  
+**Supporting: NASA Artemis Program**
 
 🌙 **LunaBot - Pioneering Autonomous Lunar Operations** 🚀

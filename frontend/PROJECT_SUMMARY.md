@@ -225,7 +225,7 @@ Total Score = (Safety × 0.40) + (Resources × 0.30) +
 
 ### Data Flow
 ```
-MockDataService
+DataService
       ↓
    (every 1s)
       ↓
@@ -251,7 +251,7 @@ App.tsx (Root)
 │   │   ├── Terrain Map
 │   │   └── Mission Control Panel
 │   ├── All Sensors
-│   │   └── AllSensorsPanel (8 sensors)
+│   │   └── AllSensorsPanel (9 sensors)
 │   ├── Site Analysis
 │   │   ├── SiteAnalysisPanel
 │   │   ├── SiteComparison

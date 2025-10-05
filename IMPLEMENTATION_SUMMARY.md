@@ -148,4 +148,4 @@ The LunaBot habitat site selection system has been successfully implemented with
 - ✅ Proper build system integration
 - ✅ Comprehensive documentation
 
-This implementation directly addresses the requirements for the NASA Space Apps Challenge and Smart India Hackathon 2025, providing a unique and valuable addition to the LunaBot system.
+This implementation directly addresses the requirements for the NASA Space Apps Challenge 2025, providing a unique and valuable addition to the LunaBot system for supporting NASA's Artemis program and future lunar exploration missions.
